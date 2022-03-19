@@ -1,16 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: starboard-exporter
+  name: starboard
   namespace: argocd
 spec:
   project: default
   source:
-    chart: starboard-exporter
-    repoURL: https://giantswarm.github.io/giantswarm-catalog
-    targetRevision: 0.3.0
+    chart: starboard-operator
+    repoURL: <https://aquasecurity.github.io/helm-charts/>
+    targetRevision: 0.9.1
     helm:
-      releaseName: starboard-exporter
+      values: |
+        targetNamespaces: app
+        trivy:
+          ignoreUnfixed: true
   destination:
-    server: https://kubernetes.default.svc
+    server: <https://kubernetes.default.svc>
     namespace: starboard-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
